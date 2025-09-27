@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Translation Service</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .translation-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .platform-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .platform-card:hover {
+            transform: translateY(-5px);
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background-color: #28a745; }
+        .status-offline { background-color: #dc3545; }
+        .translation-output {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 100px;
+        }
+        .language-selector {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        .btn-translate {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            color: white;
+            font-weight: 600;
+        }
+        .btn-translate:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row">
+            <div class="col-12">
+                <div class="translation-card text-center">
+                    <h1><i class="fas fa-language"></i> Real-time Translation Service</h1>
+                    <p class="lead">Multilingual translation for Discord, Zoom, and Google Meet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Status -->
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-chart-line"></i> Platform Status</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="platform-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5><i class="fab fa-discord text-primary"></i> Discord</h5>
+                            <p class="mb-0">Voice & Text Translation</p>
+                        </div>
+                        <div>
+                            <span class="status-indicator status-online"></span>
+                            <span class="text-success">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="platform-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5><i class="fas fa-video text-info"></i> Zoom</h5>
+                            <p class="mb-0">Meeting Translation</p>
+                        </div>
+                        <div>
+                            <span class="status-indicator status-online"></span>
+                            <span class="text-success">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="platform-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5><i class="fab fa-google text-danger"></i> Google Meet</h5>
+                            <p class="mb-0">Video Call Translation</p>
+                        </div>
+                        <div>
+                            <span class="status-indicator status-online"></span>
+                            <span class="text-success">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Translation Interface -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-comments"></i> Live Translation</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="platform-card">
+                    <h5><i class="fas fa-microphone"></i> Audio Input</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Source Language</label>
+                        <select class="form-select language-selector" id="sourceLanguage">
+                            <option value="en">English</option>
+                            <option value="ru">Russian</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="pt">Portuguese</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                            <option value="zh">Chinese</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Target Language</label>
+                        <select class="form-select language-selector" id="targetLanguage">
+                            <option value="ru">Russian</option>
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="pt">Portuguese</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                            <option value="zh">Chinese</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-translate w-100" id="startTranslation">
+                        <i class="fas fa-play"></i> Start Translation
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="platform-card">
+                    <h5><i class="fas fa-volume-up"></i> Translation Output</h5>
+                    <div class="translation-output" id="translationOutput">
+                        <div class="text-muted text-center">
+                            <i class="fas fa-language fa-2x mb-3"></i>
+                            <p>Translation will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Translation -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-edit"></i> Text Translation</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="platform-card">
+                    <h5>Enter Text to Translate</h5>
+                    <textarea class="form-control" id="inputText" rows="4" placeholder="Enter text to translate..."></textarea>
+                    <button class="btn btn-translate mt-3" id="translateText">
+                        <i class="fas fa-language"></i> Translate
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="platform-card">
+                    <h5>Translation Result</h5>
+                    <div class="translation-output" id="textTranslationOutput">
+                        <div class="text-muted text-center">
+                            <i class="fas fa-arrow-right fa-2x mb-3"></i>
+                            <p>Translation result will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-chart-bar"></i> Translation Statistics</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="platform-card text-center">
+                    <h3 class="text-primary">1,234</h3>
+                    <p class="mb-0">Words Translated</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="platform-card text-center">
+                    <h3 class="text-success">567</h3>
+                    <p class="mb-0">Active Sessions</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="platform-card text-center">
+                    <h3 class="text-info">89</h3>
+                    <p class="mb-0">Languages Supported</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="platform-card text-center">
+                    <h3 class="text-warning">98.5%</h3>
+                    <p class="mb-0">Accuracy Rate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // WebSocket connection for real-time translation
+        let ws = null;
+        let isTranslating = false;
+
+        // Initialize WebSocket connection
+        function initWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws/translation`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function(event) {
+                console.log('WebSocket connected');
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                displayTranslation(data.original, data.translated);
+            };
+            
+            ws.onclose = function(event) {
+                console.log('WebSocket disconnected');
+                setTimeout(initWebSocket, 3000); // Reconnect after 3 seconds
+            };
+            
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        // Start translation
+        document.getElementById('startTranslation').addEventListener('click', function() {
+            if (!isTranslating) {
+                startAudioTranslation();
+            } else {
+                stopAudioTranslation();
+            }
+        });
+
+        // Text translation
+        document.getElementById('translateText').addEventListener('click', function() {
+            const text = document.getElementById('inputText').value;
+            if (text.trim()) {
+                translateText(text);
+            }
+        });
+
+        // Start audio translation
+        function startAudioTranslation() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        isTranslating = true;
+                        document.getElementById('startTranslation').innerHTML = '<i class="fas fa-stop"></i> Stop Translation';
+                        document.getElementById('startTranslation').classList.remove('btn-translate');
+                        document.getElementById('startTranslation').classList.add('btn-danger');
+                        
+                        // Start audio processing
+                        processAudioStream(stream);
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing microphone:', error);
+                        alert('Error accessing microphone. Please check permissions.');
+                    });
+            } else {
+                alert('Your browser does not support audio recording.');
+            }
+        }
+
+        // Stop audio translation
+        function stopAudioTranslation() {
+            isTranslating = false;
+            document.getElementById('startTranslation').innerHTML = '<i class="fas fa-play"></i> Start Translation';
+            document.getElementById('startTranslation').classList.remove('btn-danger');
+            document.getElementById('startTranslation').classList.add('btn-translate');
+        }
+
+        // Process audio stream
+        function processAudioStream(stream) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaStreamSource(stream);
+            const processor = audioContext.createScriptProcessor(4096, 1, 1);
+            
+            processor.onaudioprocess = function(e) {
+                if (isTranslating && ws && ws.readyState === WebSocket.OPEN) {
+                    const inputData = e.inputBuffer.getChannelData(0);
+                    const audioData = new Int16Array(inputData.length);
+                    
+                    for (let i = 0; i < inputData.length; i++) {
+                        audioData[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
+                    }
+                    
+                    ws.send(audioData.buffer);
+                }
+            };
+            
+            source.connect(processor);
+            processor.connect(audioContext.destination);
+        }
+
+        // Translate text
+        function translateText(text) {
+            const sourceLang = document.getElementById('sourceLanguage').value;
+            const targetLang = document.getElementById('targetLanguage').value;
+            
+            fetch('/api/v1/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: text,
+                    source_language: sourceLang,
+                    target_language: targetLang
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayTextTranslation(text, data.translated);
+            })
+            .catch(error => {
+                console.error('Translation error:', error);
+            });
+        }
+
+        // Display translation
+        function displayTranslation(original, translated) {
+            const output = document.getElementById('translationOutput');
+            output.innerHTML = `
+                <div class="mb-3">
+                    <strong>Original:</strong> ${original}
+                </div>
+                <div>
+                    <strong>Translated:</strong> ${translated}
+                </div>
+            `;
+        }
+
+        // Display text translation
+        function displayTextTranslation(original, translated) {
+            const output = document.getElementById('textTranslationOutput');
+            output.innerHTML = `
+                <div class="mb-3">
+                    <strong>Original:</strong> ${original}
+                </div>
+                <div>
+                    <strong>Translated:</strong> ${translated}
+                </div>
+            `;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initWebSocket();
+        });
+    </script>
+</body>
+</html>
